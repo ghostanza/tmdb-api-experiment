@@ -2,7 +2,6 @@ require('dotenv').config();
 var express = require('express'),
     fs = require('fs'),
     path = require('path'),
-    chalk = require('chalk'),
     port = process.env.PORT || 8080;
 
 var app = express();
