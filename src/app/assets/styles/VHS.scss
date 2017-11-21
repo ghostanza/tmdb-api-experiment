@@ -1,0 +1,250 @@
+@import url('https://fonts.googleapis.com/css?family=Cinzel:700');
+/***** VARS ****/
+$black: #111;
+$boxWidth: 250px;
+$bkg: #222;
+
+/*** MIXINS ***/
+
+@mixin taglineFont{
+	font-family: 'Cinzel', serif;
+	font-weight: 700;
+	font-size: (10 * $boxWidth) / 250;
+	text-transform: uppercase;
+	letter-spacing: $boxWidth / 250;
+  text-align: center;
+}
+@mixin descFont{
+	font-family: 'Lato', sans-serif;
+	font-weight: 300;
+	text-align: justify;
+	font-size: (10 * $boxWidth) / 250;
+	letter-spacing: (0.25 * $boxWidth) / 250;
+  font-style: italic;
+}
+
+@mixin flexCenter{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+// the proportions of a VHS are roughly 550w/850h
+@mixin VHS{
+	width: $boxWidth;
+	height: ($boxWidth * 850) / 550;
+}
+@mixin DVD{
+	width: 250px;
+	height: 341px;
+}
+
+@mixin VHSnotch{
+  &:before, &:after{
+    position: absolute;
+    width: 100%;
+    left: 0;
+  }
+  &:before{
+		bottom: (30 * $boxWidth) / 250;
+		content: 'VHS';
+		font-family: sans-serif;
+		font-weight: bold;
+		font-size: (20 * $boxWidth) / 250;
+		font-style: italic;
+		text-shadow: 0px 0px 1px white;
+		text-align: center;
+		color: rgba(white, 0.3);
+	}
+  &:after{
+		content: '';
+		bottom: 0;
+		height: (20 * $boxWidth) / 250;
+		border-radius: 50% 50% 0 0;
+		background: $black;
+		box-shadow: inset 0px 5px 4px rgba(black, 0.7), 0px -2px 10px rgba(white, 0.7);
+	}
+}
+
+/***** MAIN ****/
+h1, h2, h3, p, ul, li{
+  margin: 0;
+  padding: 0;
+}
+html, body{
+  width: 100%;
+  min-height: 75vh;
+  margin: 0;
+  padding: 0;
+  background: $bkg;
+}
+input[type='text']{
+  border: 0px;
+  background: #000;
+  color: white;
+  letter-spacing: 0.25px;
+  font-size: 16px;
+  border-bottom: 1px solid teal;
+  line-height: 20px;
+  padding: 10px;
+  outline: none;
+  transition: all 0.5s;
+  &:focus{
+    background:white;
+    color: teal;
+  }
+}
+button{
+  border: 0;
+  cursor: pointer;
+  background: black;
+  color: teal;
+  border: 1px solid teal;
+  border-radius: 5px;
+  padding: 10px;
+  line-height: 20px;
+  font-size: 16px;
+  text-transform: uppercase;
+  transition: all 0.3s;
+}
+#app, .main{
+  height: 100%;
+  position: relative;
+}
+// SEARCH
+.search{
+  text-align: center;
+  background: mix(white, $bkg, 5);
+  width: 100%;
+  left: 0;
+  top: 0;
+  position: fixed;
+  padding: 20px 0;
+  z-index: 10;
+}
+.search-bar{
+  & input{
+    width: 75%;
+    margin-right: 10px;
+  }
+  & button{
+    width: 15%;
+    min-width: 50px;
+    &:hover{
+      background: teal;
+      color: white;
+    }
+  }
+}
+.main{
+  padding-top: 100px;
+}
+// RESULTS CONTAINER
+.results{
+  text-align: center;
+}
+.results.no-results{
+  min-height: 75vh;
+  color: mix(white, $bkg, 5);
+  font-family: 'Cinzel', sans-serif;
+  @include flexCenter;
+}
+.vhs-wrap{
+  perspective: 625px;
+  display: inline-block;
+}
+// VHS BOX
+.vhs-box{
+  @include VHS;
+  cursor: pointer;
+  transition: transform 0.75s ease;
+  margin: 20px;
+  user-select: none;
+  position: relative;
+	transform-style: preserve-3d;
+  &.spin{
+    transform: rotateY(180deg) scale(0.95);
+  }
+  & .front{
+    position: relative;
+    overflow: hidden;
+    font-size: (18 * $boxWidth) / 250;
+    color: white;
+    background: black;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+  }
+  & .front, .back{
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    border: 1px solid rgba(black, 0.2);
+  }
+  & .back, & .side{
+    top: 0;
+    position: absolute;
+    height: 100%;
+  }
+  & .side{
+    width: $boxWidth / 5;
+    overflow: hidden;
+    background-color: $black;
+    background-size: auto 250%;
+    background-repeat: no-repeat;
+    box-shadow: inset 0px 0px 5px rgba(black, 0.2);
+    @include VHSnotch;
+
+  }
+  & .side.left{
+    left: 0;
+    transform: translateZ(($boxWidth / 5) * -1) rotateY(271deg);
+    transform-origin: top left;
+    background-position: left center;
+  }
+  & .side.right{
+    right: 0;
+    transform: translateZ(($boxWidth / 5) * -1) rotateY(-271deg);
+    transform-origin: top right;
+    background-position: right center;
+  }
+  & .back{
+    background: $black;
+    overflow: hidden;
+    color: white;
+    transform: translateZ(($boxWidth / 5 * -1)) rotateY(180deg);
+  }
+  & img.background{
+    position: absolute;
+    width: 250%;
+    height: auto;
+    top: -100%;
+    left: -50%;
+    z-index: -1;
+    opacity: 0.25;
+    transform: rotate(30deg);
+  }
+  & .hero{
+    height: auto;
+    max-height: 40%;
+    border: 2px solid rgba(white, 0.6);
+  }
+  & .hero, & .tagline, & .description{
+    margin: ((10 * $boxWidth)/250) auto;
+    width: 90%;
+  }
+  & .tagline{
+    @include taglineFont;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(white, 0.3);
+  }
+  & .description{
+    @include descFont;
+  	line-height: (12 * $boxWidth) / 250;
+    max-height: (12px * 10);
+    position: relative;
+    overflow: hidden;
+  }
+   & .runtime{
+     @include taglineFont;
+   }
+}
